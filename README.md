@@ -1,6 +1,8 @@
 # Logitrans
 Trabajo evaluativo bases de datos.
 Jenny Alexandra Florez Sanchez.
+
+
 8. Sistema de gestión para transporte logístico "logistrans"
 
 La empresa de logística "Entregas Rápidas S.A." necesita administrar sus operaciones de transporte y distribución. Cada vehículo de la flota tiene un número de registro único, tipo (camión, furgoneta, motocicleta), marca, modelo, año, capacidad de carga, consumo promedio de combustible, número de placa, fecha de adquisición, kilometraje actual y estado operativo.
