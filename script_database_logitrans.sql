@@ -35,9 +35,10 @@ PRIMARY KEY(conductorID));
 
 -- Tabla intermedia para relación muchos a muchos
 CREATE TABLE conductor_vehiculo (
+conductor_vehiculoID INT NOT NULL AUTO_INCREMENT, 
 conductorID INT NOT NULL,
 vehiculoID INT NOT NULL,
-PRIMARY KEY (conductorID, vehiculoID),
+PRIMARY KEY (conductor_vehiculoID),
 CONSTRAINT fk_cv_conductor FOREIGN KEY (conductorID) REFERENCES conductores(conductorID) ON DELETE CASCADE,
 CONSTRAINT fk_cv_vehiculo FOREIGN KEY (vehiculoID) REFERENCES vehiculo(vehiculoID) ON DELETE CASCADE);
 
@@ -62,6 +63,8 @@ envioID INT NOT NULL AUTO_INCREMENT,
 numero_guia VARCHAR (255) NOT NULL UNIQUE,
 fecha_hora_recepcion DATETIME NOT NULL,
 id_cliente INT NOT NULL,
+id_conductor INT NOT NULL,
+id_vehiculo INT NOT NULL,
 remitente VARCHAR (255) NOT NULL,
 destinatario VARCHAR(255) NOT NULL,
 direccion_origen VARCHAR(255) NOT NULL,
@@ -77,7 +80,9 @@ estado_actual ENUM('recibido','en transito','entregado') NOT NULL,
 instrucciones_especiales VARCHAR (255),
 ruta_distribucion INT NOT NULL,
 PRIMARY KEY(envioID),
-CONSTRAINT fk_id_cliente FOREIGN KEY (id_cliente) REFERENCES cliente(clienteID) ON DELETE CASCADE 
+CONSTRAINT fk_id_cliente FOREIGN KEY (id_cliente) REFERENCES cliente(clienteID) ON DELETE CASCADE,
+CONSTRAINT fk_fkconductor_id FOREIGN KEY (id_conductor) REFERENCES conductores(conductorID) ON DELETE CASCADE,
+CONSTRAINT fk_fkvehiculo_id FOREIGN KEY (id_vehiculo) REFERENCES vehiculo(vehiculoID) ON DELETE CASCADE
 );
 
 CREATE TABLE ruta_distribucion(
@@ -291,40 +296,41 @@ VALUES
 ('RD-010','Ruta Bogotá Norte','Bogotá Norte','Usaquén, Suba, Chía', 55,115,2,10,'07:00-11:00');
 
 
-INSERT INTO envios(numero_guia,fecha_hora_recepcion,id_cliente,remitente,destinatario,direccion_origen,
-direccion_destino, tipo_servicio, descripcion_contenido,peso,dimensiones,valor_declarado,costo,forma_pago,
-estado_actual, instrucciones_especiales,ruta_distribucion)
-VALUES
-('G-001', '2026-01-10 08:30:00', 1, 'Carlos Ramírez', 'Ana Gómez', 'Calle 10 #20-30, Medellín',
-'Calle 50 #40-25, Bogotá', 'express', 'Documentos legales', 2.50, '30x20x10 cm', 500000, 25000, 'tarjeta',
-'en transito', 'Entregar en portería', 1),
-('G-002', '2026-01-11 09:15:00', 2, 'Textiles Antioquia', 'Juan Pérez', 'Carrera 15 #45-60, Cali',
-'Calle 80 #12-34, Medellín', 'normal', 'Paquete de ropa', 5.20, '60x40x30 cm', 800000, 40000, 'efectivo',
-'recibido', NULL, 2),
-('G-003', '2026-02-12 14:00:00', 3, 'María López', 'Pedro Torres', 'Av. Siempre Viva 123, Bucaramanga',
-'Calle 100 #20-10, Bogotá', 'mismo dia', 'Electrodoméstico pequeño', 12.00, '80x60x50 cm', 1500000, 70000, 'transferencia',
-'en transito', 'Frágil, manejar con cuidado', 1),
-('G-004', '2026-03-13 10:45:00', 1, 'Carlos Ramírez', 'Empresa ABC', 'Calle 25 #30-40, Medellín',
-'Calle 70 #15-20, Cartagena', 'express', 'Papelería corporativa', 3.00, '40x30x20 cm', 300000, 20000, 'tarjeta',
-'en transito', NULL, 3),
-('G-005', '2026-03-14 16:20:00', 2, 'Textiles Antioquia', 'Luis Fernández', 'Carrera 50 #25-60, Cali',
-'Calle 90 #30-40, Bogotá', 'normal', 'Cajas de repuestos', 20.00, '100x80x60 cm', 2000000, 120000, 'efectivo',
-'en transito', 'Requiere montacargas', 2),
-('G-006', '2026-03-15 11:00:00', 3, 'María López', 'Ana Gómez', 'Av. Libertad 456, Bucaramanga',
-'Calle 40 #25-30, Medellín', 'mismo dia', 'Flores y regalos', 1.50, '25x25x25 cm', 200000, 15000, 'transferencia',
-'entregado', 'Entregar personalmente', 1),
-('G-007', '2024-02-16 13:30:00', 4, 'luisa sanchez ', 'Pedro Torres', 'Calle 12 #34-56, Bogotá',
-'Calle 22 #45-67, Cali', 'express', 'Equipo de oficina', 8.00, '70x50x40 cm', 1200000, 60000, 'tarjeta',
-'en transito', NULL, 3),
-('G-008', '2026-02-28 09:50:00', 5, 'Juan Pérez', 'Restaurante el charro', 'Carrera 60 #70-80, Medellín',
-'Calle 33 #44-55, Bucaramanga', 'normal', 'Libros y material educativo', 10.00, '90x60x40 cm', 500000, 30000, 'efectivo',
-'recibido', 'Caja frágil', 2),
-('G-009', '2024-02-18 15:10:00', 2, 'Textiles antioquia', 'Carlos Ramírez', 'Calle 77 #88-99, Cali',
-'Calle 11 #22-33, Bogotá', 'express', 'Medicamentos', 4.00, '50x40x30 cm', 1000000, 50000, 'transferencia',
-'en transito', 'Entrega urgente', 3),
-('G-010', '2026-03-19 17:25:00', 1, 'Carlos Ramírez', 'María López', 'Carrera 20 #30-40, Medellín',
-'Calle 55 #66-77, Cartagena', 'mismo dia', 'Paquete de alimentos', 15.00, '100x70x50 cm', 700000, 35000, 'efectivo',
-'en transito', 'Mantener refrigerado', 1);
+INSERT INTO envios(
+numero_guia,fecha_hora_recepcion,id_cliente,id_conductor,id_vehiculo,remitente,destinatario,
+direccion_origen,direccion_destino,tipo_servicio,descripcion_contenido,peso,dimensiones,
+valor_declarado,costo,forma_pago,estado_actual,instrucciones_especiales,ruta_distribucion
+) VALUES
+('G-001','2026-01-10 08:30:00',1,1,1,'Carlos Ramírez','Ana Gómez','Calle 10 #20-30, Medellín',
+'Calle 50 #40-25, Bogotá','express','Documentos legales',2.50,'30x20x10 cm',500000,25000,'tarjeta',
+'en transito','Entregar en portería',1),
+('G-002','2026-01-11 09:15:00',2,2,3,'Textiles Antioquia','Juan Pérez','Carrera 15 #45-60, Cali',
+'Calle 80 #12-34, Medellín','normal','Paquete de ropa',5.20,'60x40x30 cm',800000,40000,'efectivo',
+'recibido',NULL,2),
+('G-003','2026-02-12 14:00:00',3,3,2,'María López','Pedro Torres','Av. Siempre Viva 123, Bucaramanga',
+'Calle 100 #20-10, Bogotá','mismo dia','Electrodoméstico pequeño',12.00,'80x60x50 cm',1500000,70000,'transferencia',
+'en transito','Frágil, manejar con cuidado',1),
+('G-004','2026-03-13 10:45:00',1,4,7,'Carlos Ramírez','Empresa ABC','Calle 25 #30-40, Medellín',
+'Calle 70 #15-20, Cartagena','express','Papelería corporativa',3.00,'40x30x20 cm',300000,20000,'tarjeta',
+'en transito',NULL,3),
+('G-005','2026-03-14 16:20:00',2,5,6,'Textiles Antioquia','Luis Fernández','Carrera 50 #25-60, Cali',
+'Calle 90 #30-40, Bogotá','normal','Cajas de repuestos',20.00,'100x80x60 cm',2000000,120000,'efectivo',
+'en transito','Requiere montacargas',2),
+('G-006','2026-03-15 11:00:00',3,6,9,'María López','Ana Gómez','Av. Libertad 456, Bucaramanga',
+'Calle 40 #25-30, Medellín','mismo dia','Flores y regalos',1.50,'25x25x25 cm',200000,15000,'transferencia',
+'entregado','Entregar personalmente',1),
+('G-007','2024-02-16 13:30:00',4,7,4,'Luisa Sánchez','Pedro Torres','Calle 12 #34-56, Bogotá',
+'Calle 22 #45-67, Cali','express','Equipo de oficina',8.00,'70x50x40 cm',1200000,60000,'tarjeta',
+'en transito',NULL,3),
+('G-008','2026-02-28 09:50:00',5,8,3,'Juan Pérez','Restaurante El Charro','Carrera 60 #70-80, Medellín',
+'Calle 33 #44-55, Bucaramanga','normal','Libros y material educativo',10.00,'90x60x40 cm',500000,30000,'efectivo',
+'recibido','Caja frágil',2),
+('G-009','2024-02-18 15:10:00',2,9,6,'Textiles Antioquia','Carlos Ramírez','Calle 77 #88-99, Cali',
+'Calle 11 #22-33, Bogotá','express','Medicamentos',4.00,'50x40x30 cm',1000000,50000,'transferencia',
+'en transito','Entrega urgente',3),
+('G-010','2026-03-19 17:25:00',1,10,2,'Carlos Ramírez','María López','Carrera 20 #30-40, Medellín',
+'Calle 55 #66-77, Cartagena','mismo dia','Paquete de alimentos',15.00,'100x70x50 cm',700000,35000,'efectivo',
+'en transito','Mantener refrigerado',1);
 
 
 INSERT INTO seguimiento_envios(id_envio,id_centro_distribucion,id_conductor,fecha_hora,ubicacion,actividad_realizada,
