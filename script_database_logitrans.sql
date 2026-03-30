@@ -39,7 +39,7 @@ conductorID INT NOT NULL,
 vehiculoID INT NOT NULL,
 PRIMARY KEY (conductorID, vehiculoID),
 CONSTRAINT fk_cv_conductor FOREIGN KEY (conductorID) REFERENCES conductores(conductorID) ON DELETE CASCADE,
-CONSTRAINT fk_cv_vehiculo FOREIGN KEY (vehiculoID) REFERENCES vehiculo(vehiculoID)ON DELETE CASCADE);
+CONSTRAINT fk_cv_vehiculo FOREIGN KEY (vehiculoID) REFERENCES vehiculo(vehiculoID) ON DELETE CASCADE);
 
 CREATE TABLE cliente(
 clienteID INT NOT NULL AUTO_INCREMENT,
