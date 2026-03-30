@@ -33,6 +33,21 @@ certificacion_especial VARCHAR(255),
 estado_conductor ENUM('disponible','en ruta','descanso') NOT NULL,
 PRIMARY KEY(conductorID));
 
+-- Tabla intermedia para relación muchos a muchos
+CREATE TABLE conductor_vehiculo (
+    conductorID INT NOT NULL,
+    vehiculoID INT NOT NULL,
+    PRIMARY KEY (conductorID, vehiculoID),
+    CONSTRAINT fk_cv_conductor 
+        FOREIGN KEY (conductorID) 
+        REFERENCES conductores(conductorID)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_cv_vehiculo 
+        FOREIGN KEY (vehiculoID) 
+        REFERENCES vehiculo(vehiculoID)
+        ON DELETE CASCADE
+);
+
 CREATE TABLE cliente(
 clienteID INT NOT NULL AUTO_INCREMENT,
 codigo_unico VARCHAR(255) NOT NULL UNIQUE,
@@ -69,7 +84,7 @@ estado_actual ENUM('recibido','en transito','entregado') NOT NULL,
 instrucciones_especiales VARCHAR (255),
 ruta_distribucion INT NOT NULL,
 PRIMARY KEY(envioID),
-CONSTRAINT fk_id_cliente FOREIGN KEY (id_cliente) REFERENCES cliente(clienteID) ON DELETE CASCADE
+CONSTRAINT fk_id_cliente FOREIGN KEY (id_cliente) REFERENCES cliente(clienteID) ON DELETE CASCADE 
 );
 
 CREATE TABLE ruta_distribucion(
@@ -84,8 +99,8 @@ id_vehiculo INT NOT NULL,
 id_conductor INT NOT NULL,
 horario_programado VARCHAR (255) NOT NULL,
 PRIMARY KEY(ruta_distribucionID),
-CONSTRAINT fk_vehiculoid FOREIGN KEY (id_vehiculo) REFERENCES vehiculo(vehiculoID)ON DELETE CASCADE,
-CONSTRAINT fk_conductorid FOREIGN KEY (id_conductor) REFERENCES conductores(conductorID) ON DELETE CASCADE
+CONSTRAINT fk_vehiculoid FOREIGN KEY (id_vehiculo) REFERENCES vehiculo(vehiculoID) ON DELETE CASCADE ,
+CONSTRAINT fk_conductorid FOREIGN KEY (id_conductor) REFERENCES conductores(conductorID) ON DELETE CASCADE 
 );
 
 ALTER TABLE envios ADD CONSTRAINT fk_rutadistribucion FOREIGN KEY(ruta_distribucion) 
@@ -103,8 +118,8 @@ empleado_responsable VARCHAR (255) NOT NULL,
 observaciones VARCHAR(255),
 coordenadas_gps VARCHAR(255) NOT NULL,
 PRIMARY KEY (seguimiento_enviosID),
-CONSTRAINT fk_enviosid FOREIGN KEY (id_envio) REFERENCES envios(envioID) ON DELETE CASCADE,
-CONSTRAINT fk_conductor FOREIGN KEY (id_conductor) REFERENCES conductores(conductorID) ON DELETE CASCADE
+CONSTRAINT fk_enviosid FOREIGN KEY (id_envio) REFERENCES envios(envioID) ON DELETE CASCADE ,
+CONSTRAINT fk_conductor FOREIGN KEY (id_conductor) REFERENCES conductores(conductorID) ON DELETE CASCADE 
 );
 
 CREATE TABLE centros_distribucion(
@@ -123,7 +138,7 @@ PRIMARY KEY(centro_distribucionID)
 );
 
 ALTER TABLE seguimiento_envios ADD CONSTRAINT fk_seguimiento_enviosid 
-FOREIGN KEY (id_centro_distribucion) REFERENCES centros_distribucion(centro_distribucionID) ON DELETE CASCADE;
+FOREIGN KEY (id_centro_distribucion) REFERENCES centros_distribucion(centro_distribucionID)ON DELETE CASCADE ;
 
 CREATE TABLE mantenimiento_vehiculo(
 mantenimiento_vehiculoID INT NOT NULL AUTO_INCREMENT,
@@ -139,7 +154,7 @@ taller_o_tecnico VARCHAR (255) NOT NULL,
 tiempo_fuera_servicio VARCHAR (255) NOT NULL,
 descripcion_trabajo_realizado VARCHAR(255) NOT NULL,
 PRIMARY KEY (mantenimiento_vehiculoID),
-CONSTRAINT fk_vehiculo FOREIGN KEY (id_vehiculo) REFERENCES vehiculo(vehiculoID) ON DELETE CASCADE
+CONSTRAINT fk_vehiculo FOREIGN KEY (id_vehiculo) REFERENCES vehiculo(vehiculoID) ON DELETE CASCADE 
 );
 
 CREATE TABLE consumo_combustible(
@@ -153,8 +168,8 @@ costo DECIMAL (10,2) NOT NULL,
 estacion_servicio VARCHAR (255) NOT NULL,
 km_momento_carga DECIMAL (10,2) NOT NULL,
 PRIMARY KEY(consumo_combustibleID),
-CONSTRAINT fk_vehiculos_id FOREIGN KEY (vehiculo) REFERENCES vehiculo(vehiculoID) ON DELETE CASCADE,
-CONSTRAINT fk_conductoresid FOREIGN KEY (conductor) REFERENCES conductores(conductorID) ON DELETE CASCADE
+CONSTRAINT fk_vehiculos_id FOREIGN KEY (vehiculo) REFERENCES vehiculo(vehiculoID)ON DELETE CASCADE ,
+CONSTRAINT fk_conductoresid FOREIGN KEY (conductor) REFERENCES conductores(conductorID)ON DELETE CASCADE 
 );
 
 CREATE TABLE incidentes_durante_servicio(
@@ -171,8 +186,8 @@ consecuencias VARCHAR (255) NOT NULL,
 medidas_tomadas VARCHAR (255) NOT NULL,
 estado_resolucion VARCHAR (255) NOT NULL,
 PRIMARY KEY (incidentes_servicioID),
-CONSTRAINT fk_vehiculo_id1 FOREIGN KEY (vehiculo_id) REFERENCES vehiculo(vehiculoID) ON DELETE CASCADE,
-CONSTRAINT fk_conductor_id1 FOREIGN KEY (conductor_id) REFERENCES conductores(conductorID) ON DELETE CASCADE
+CONSTRAINT fk_vehiculo_id1 FOREIGN KEY (vehiculo_id) REFERENCES vehiculo(vehiculoID)ON DELETE CASCADE ,
+CONSTRAINT fk_conductor_id1 FOREIGN KEY (conductor_id) REFERENCES conductores(conductorID)ON DELETE CASCADE 
 );
 
 
@@ -215,6 +230,8 @@ VALUES
 ('E-010', 'Lucas', 'Castañeda Reginfo', '1035214785', '1988-12-12','cra 80 # 39 - 12', '3058541234', 'C2', 
 '2028-05-08', 10, 'Certificación internacional de carga', 'descanso');
  
+ INSERT INTO conductor_vehiculo (conductorID, vehiculoID) VALUES
+(1, 1), (2, 3),  (3, 2),  (4, 7), (5, 6), (6, 9),  (7, 4),  (8, 3),  (9, 6),  (10,2);  
 
 INSERT INTO cliente(codigo_unico,tipo_cliente,nombre_o_razon_social,rut_o_dni,direccion_fiscal,direccion_recogida,
 telefono,email, persona_contacto, termino_pago, clasificacion_por_envio) 
