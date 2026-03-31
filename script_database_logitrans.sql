@@ -96,13 +96,11 @@ tiempo_estimado INT NOT NULL,
 id_vehiculo INT NOT NULL,
 id_conductor INT NOT NULL,
 horario_programado VARCHAR (255) NOT NULL,
+centro_distribucionID INT NOT NULL,
 PRIMARY KEY(ruta_distribucionID),
 CONSTRAINT fk_vehiculoid FOREIGN KEY (id_vehiculo) REFERENCES vehiculo(vehiculoID) ON DELETE CASCADE ,
-CONSTRAINT fk_conductorid FOREIGN KEY (id_conductor) REFERENCES conductores(conductorID) ON DELETE CASCADE 
-);
+CONSTRAINT fk_conductorid FOREIGN KEY (id_conductor) REFERENCES conductores(conductorID) ON DELETE CASCADE);
 
-ALTER TABLE envios ADD CONSTRAINT fk_rutadistribucion FOREIGN KEY(ruta_distribucion) 
-REFERENCES ruta_distribucion(ruta_distribucionID) ON DELETE CASCADE;
 
 CREATE TABLE seguimiento_envios(
 seguimiento_enviosID INT NOT NULL auto_increment,
@@ -137,6 +135,10 @@ PRIMARY KEY(centro_distribucionID)
 
 ALTER TABLE seguimiento_envios ADD CONSTRAINT fk_seguimiento_enviosid 
 FOREIGN KEY (id_centro_distribucion) REFERENCES centros_distribucion(centro_distribucionID)ON DELETE CASCADE ;
+
+ALTER TABLE ruta_distribucion 
+ADD CONSTRAINT fk_centro_distribucionid FOREIGN KEY (centro_distribucionID) REFERENCES centros_distribucion(centro_distribucionID)
+ON DELETE CASCADE;
 
 CREATE TABLE mantenimiento_vehiculo(
 mantenimiento_vehiculoID INT NOT NULL AUTO_INCREMENT,
@@ -281,19 +283,19 @@ VALUES
 40,'07:00-18:00','Lucia Cardenas');
 
 
-INSERT INTO ruta_distribucion(codigo,nombre,zona_geografiCa,puntos_entrega_habituales,distancia_total_km,
-tiempo_estimado, id_vehiculo, id_conductor, horario_programado)
-VALUES 
-('RD-001','Ruta Medellín Norte','Medellín Norte','Bello, Copacabana, Girardota',45,90,1,1,'08:00-12:00'),
-('RD-002','Ruta Bogotá Sur','Bogotá Sur','Kennedy, Bosa, Soacha',60,120,2,2,'07:00-11:00'),
-('RD-003','Ruta Cali Centro','Cali Centro','San Nicolás, El Prado, Versalles',25,60,5,3,'09:00-13:00'),
-('RD-004','Ruta Itagüí Sur','Itagüí','Itagüí, La Estrella, Sabaneta',30,75,4,4,'10:00-14:00'),
-('RD-005','Ruta Medellín Centro','Medellín Centro','La Candelaria, Boston, Prado',20,50,3,5,'08:00-12:00'),
-('RD-006','Ruta Pasto','Pasto','Centro, San Juan, Catambuco', 40,100,6,6,'09:00-13:00'),
-('RD-007','Ruta Armenia','Armenia','Centro, La Tebaida, Montenegro',35,85,8,7,'07:00-11:00'),
-('RD-008','Ruta Santa Marta','Santa Marta','Centro, Taganga, Gaira', 50,110,9,8,'08:00-12:00'),
-('RD-009','Ruta Poblado Medellín','Medellín Poblado','El Poblado, Envigado, Laureles', 28,70,10,9,'10:00-14:00'),
-('RD-010','Ruta Bogotá Norte','Bogotá Norte','Usaquén, Suba, Chía', 55,115,2,10,'07:00-11:00');
+INSERT INTO ruta_distribucion(codigo,nombre,zona_geografica,puntos_entrega_habituales,distancia_total_km,
+tiempo_estimado,id_vehiculo,id_conductor,horario_programado,centro_distribucionID) 
+VALUES
+('RD-001','Ruta Medellín Norte','Medellín Norte','Bello, Copacabana, Girardota',45,90,1,1,'08:00-12:00',1),
+('RD-002','Ruta Bogotá Sur','Bogotá Sur','Kennedy, Bosa, Soacha',60,120,2,2,'07:00-11:00',2),
+('RD-003','Ruta Cali Centro','Cali Centro','San Nicolás, El Prado, Versalles',25,60,5,3,'09:00-13:00',3),
+('RD-004','Ruta Itagüí Sur','Itagüí','Itagüí, La Estrella, Sabaneta',30,75,4,4,'10:00-14:00',4),
+('RD-005','Ruta Medellín Centro','Medellín Centro','La Candelaria, Boston, Prado',20,50,3,5,'08:00-12:00',5),
+('RD-006','Ruta Pasto','Pasto','Centro, San Juan, Catambuco',40,100,6,6,'09:00-13:00',6),
+('RD-007','Ruta Armenia','Armenia','Centro, La Tebaida, Montenegro',35,85,8,7,'07:00-11:00',7),
+('RD-008','Ruta Santa Marta','Santa Marta','Centro, Taganga, Gaira',50,110,9,8,'08:00-12:00',8),
+('RD-009','Ruta Poblado Medellín','Medellín Poblado','El Poblado, Envigado, Laureles',28,70,10,9,'10:00-14:00',9),
+('RD-010','Ruta Bogotá Norte','Bogotá Norte','Usaquén, Suba, Chía',55,115,2,10,'07:00-11:00',10);
 
 
 INSERT INTO envios(
